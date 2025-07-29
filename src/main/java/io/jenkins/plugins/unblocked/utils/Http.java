@@ -6,9 +6,13 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.Nullable;
 
 public class Http {
+
+    private static final Logger LOGGER = Logger.getLogger(Http.class.getName());
 
     private static final String BASEURL = "https://getunblocked.com";
 
@@ -34,8 +38,10 @@ public class Http {
                 .build();
 
         try {
+            LOGGER.log(Level.INFO, "request: {0}", url);
             return CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
+            LOGGER.log(Level.SEVERE, e, () -> "request: " + url);
             throw new RuntimeException(e);
         }
     }
