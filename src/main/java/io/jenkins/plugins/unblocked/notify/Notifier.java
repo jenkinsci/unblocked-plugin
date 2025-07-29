@@ -1,5 +1,6 @@
 package io.jenkins.plugins.unblocked.notify;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.model.Run;
 import hudson.plugins.git.util.BuildData;
 import io.jenkins.plugins.unblocked.utils.Http;
@@ -12,10 +13,11 @@ import jenkins.model.Jenkins;
 
 public class Notifier {
 
-    public static HttpResponse<String> submit(@Nullable String baseUrl, Run<?, ?> run) {
+    public static HttpResponse<String> submit(
+            @Nullable String baseUrl, @NonNull String signature, @NonNull Run<?, ?> run) {
         final var payload = buildPayload(run);
         final var json = Json.stringify(payload);
-        return Http.post(baseUrl, json);
+        return Http.post(baseUrl, json, signature);
     }
 
     private static Map<String, Object> buildPayload(final Run<?, ?> run) {

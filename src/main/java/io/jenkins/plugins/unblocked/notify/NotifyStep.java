@@ -21,14 +21,22 @@ public class NotifyStep extends Step {
     @Nullable
     private String baseUrl;
 
+    @Nullable
+    private String signature;
+
     @DataBoundSetter
     public void setBaseUrl(@Nullable String baseUrl) {
         this.baseUrl = baseUrl;
     }
 
+    @DataBoundSetter
+    public void setSignature(@Nullable String signature) {
+        this.signature = signature;
+    }
+
     @Override
     public StepExecution start(StepContext context) throws Exception {
-        return new NotifyExecution(context, baseUrl);
+        return new NotifyExecution(context, baseUrl, signature);
     }
 
     @Extension

@@ -30,6 +30,15 @@ public class UnblockedJobProperty extends OptionalJobProperty<Job<?, ?>> {
         config.setBaseUrl(baseUrl);
     }
 
+    public String getSignature() {
+        return config.getSignature();
+    }
+
+    @DataBoundSetter
+    public void setSignature(String signature) {
+        config.setSignature(signature);
+    }
+
     @Extension
     public static final class DescriptorImpl extends OptionalJobProperty.OptionalJobPropertyDescriptor {
 
@@ -46,6 +55,10 @@ public class UnblockedJobProperty extends OptionalJobProperty<Job<?, ?>> {
 
         public FormValidation doCheckBaseUrl(@QueryParameter String value) {
             return UnblockedConfig.doCheckBaseUrl(value);
+        }
+
+        public FormValidation doCheckSignature(@QueryParameter String value) {
+            return UnblockedConfig.doCheckSignature(value);
         }
     }
 }

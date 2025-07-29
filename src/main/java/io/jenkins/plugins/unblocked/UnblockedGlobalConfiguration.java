@@ -10,6 +10,7 @@ import org.kohsuke.stapler.QueryParameter;
 public class UnblockedGlobalConfiguration extends GlobalConfiguration {
 
     private String baseUrl;
+    private String signature;
 
     public UnblockedGlobalConfiguration() {
         load();
@@ -31,5 +32,19 @@ public class UnblockedGlobalConfiguration extends GlobalConfiguration {
 
     public FormValidation doCheckBaseUrl(@QueryParameter String value) {
         return UnblockedConfig.doCheckBaseUrl(value);
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    @DataBoundSetter
+    public void setSignature(String signature) {
+        this.signature = UnblockedConfig.doNormalizeSignature(signature);
+        save();
+    }
+
+    public FormValidation doCheckSignature(@QueryParameter String value) {
+        return UnblockedConfig.doCheckSignature(value);
     }
 }

@@ -15,9 +15,13 @@ public class NotifyExecution extends SynchronousNonBlockingStepExecution<Void> {
     @Nullable
     private final String baseUrl;
 
-    public NotifyExecution(@NonNull StepContext context, @Nullable String baseUrl) {
+    @Nullable
+    private final String signature;
+
+    public NotifyExecution(@NonNull StepContext context, @Nullable String baseUrl, @Nullable String signature) {
         super(context);
         this.baseUrl = baseUrl;
+        this.signature = signature;
     }
 
     @Override
@@ -25,7 +29,8 @@ public class NotifyExecution extends SynchronousNonBlockingStepExecution<Void> {
         final var run = getContext().get(Run.class);
         if (run != null) {
             final var baseUrl = getBaseUrl(run);
-            Notifier.submit(baseUrl, run);
+            final var signature = getSignature(run);
+            Notifier.submit(baseUrl, signature, run);
         }
         return null;
     }
@@ -48,5 +53,21 @@ public class NotifyExecution extends SynchronousNonBlockingStepExecution<Void> {
             }
         }
         return UnblockedGlobalConfiguration.get().getBaseUrl();
+    }
+
+    private String getSignature(Run<?, ?> run) {
+        if (signature != null) {
+            return signature;
+        }
+        for (final var provider : ExtensionList.lookup(UnblockedConfigProvider.class)) {
+            var config = provider.getUnblockedConfig(run);
+            if (config != null) {
+                var signature = config.getSignature();
+                if (signature != null) {
+                    return signature;
+                }
+            }
+        }
+        return UnblockedGlobalConfiguration.get().getSignature();
     }
 }

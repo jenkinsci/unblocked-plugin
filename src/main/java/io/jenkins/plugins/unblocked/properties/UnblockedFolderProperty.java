@@ -31,6 +31,15 @@ public class UnblockedFolderProperty extends AbstractFolderProperty<AbstractFold
         config.setBaseUrl(baseUrl);
     }
 
+    public String getSignature() {
+        return config.getSignature();
+    }
+
+    @DataBoundSetter
+    public void setSignature(String signature) {
+        config.setSignature(signature);
+    }
+
     @Extension
     public static final class DescriptorImpl extends AbstractFolderPropertyDescriptor {
 
@@ -42,6 +51,10 @@ public class UnblockedFolderProperty extends AbstractFolderProperty<AbstractFold
 
         public FormValidation doCheckBaseUrl(@QueryParameter String value) {
             return UnblockedConfig.doCheckBaseUrl(value);
+        }
+
+        public FormValidation doCheckSignature(@QueryParameter String value) {
+            return UnblockedConfig.doCheckSignature(value);
         }
     }
 }
