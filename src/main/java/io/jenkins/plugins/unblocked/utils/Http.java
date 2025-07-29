@@ -23,7 +23,7 @@ public class Http {
             .version(HttpClient.Version.HTTP_1_1)
             .build();
 
-    public static HttpResponse<String> post(@Nullable String baseUrl, String body, String signature) {
+    public static HttpResponse<String> post(@Nullable String baseUrl, String eventType, String body, String signature) {
         if (signature == null) {
             LOGGER.log(Level.SEVERE, "Missing signature");
             return null;
@@ -31,10 +31,12 @@ public class Http {
 
         final var url = String.format("%s/api/hooks/jenkins", baseUrl != null ? baseUrl : BASEURL);
         final var payload = HttpRequest.BodyPublishers.ofString(body);
+
         @SuppressWarnings("UastIncorrectHttpHeaderInspection")
         final var request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("Content-Type", "application/json")
+                .header("X-Jenkins-Event", eventType)
                 .header("X-Jenkins-Signature", signature)
                 .POST(payload)
                 .timeout(TIMEOUT)

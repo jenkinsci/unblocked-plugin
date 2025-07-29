@@ -13,11 +13,13 @@ import jenkins.model.Jenkins;
 
 public class Notifier {
 
+    private static final String eventType = "Notify";
+
     public static HttpResponse<String> submit(
             @Nullable String baseUrl, @NonNull String signature, @NonNull Run<?, ?> run) {
         final var payload = buildPayload(run);
         final var json = Json.stringify(payload);
-        return Http.post(baseUrl, json, signature);
+        return Http.post(baseUrl, eventType, json, signature);
     }
 
     private static Map<String, Object> buildPayload(final Run<?, ?> run) {
