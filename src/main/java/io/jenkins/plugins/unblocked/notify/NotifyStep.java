@@ -3,7 +3,6 @@ package io.jenkins.plugins.unblocked.notify;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.Run;
-import io.jenkins.plugins.unblocked.UnblockedGlobalConfiguration;
 import java.util.Collections;
 import java.util.Set;
 import javax.annotation.Nullable;
@@ -27,13 +26,8 @@ public class NotifyStep extends Step {
         this.baseUrl = baseUrl;
     }
 
-    public String getBaseUrl() {
-        return baseUrl != null ? baseUrl : UnblockedGlobalConfiguration.get().getBaseUrl();
-    }
-
     @Override
     public StepExecution start(StepContext context) throws Exception {
-        final var baseUrl = getBaseUrl();
         return new NotifyExecution(context, baseUrl);
     }
 

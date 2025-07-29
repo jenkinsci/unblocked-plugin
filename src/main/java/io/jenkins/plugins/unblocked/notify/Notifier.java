@@ -5,16 +5,12 @@ import hudson.plugins.git.util.BuildData;
 import io.jenkins.plugins.unblocked.utils.Http;
 import io.jenkins.plugins.unblocked.utils.Json;
 import java.net.http.HttpResponse;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import javax.annotation.Nullable;
 import jenkins.model.Jenkins;
 
 public class Notifier {
-
-    public static HttpResponse<String> submit(Run<?, ?> run) {
-        return submit(null, run);
-    }
 
     public static HttpResponse<String> submit(@Nullable String baseUrl, Run<?, ?> run) {
         final var payload = buildPayload(run);
@@ -23,8 +19,10 @@ public class Notifier {
     }
 
     private static Map<String, Object> buildPayload(final Run<?, ?> run) {
-        final var payload = new HashMap<String, Object>();
-        payload.put("jenkinsUrl", Jenkins.get().getRootUrl());
+        final var jenkinsUrl = Jenkins.get().getRootUrl();
+
+        final var payload = new TreeMap<String, Object>();
+        payload.put("_class", NotifyStep.class.getName());
 
         final var result = run.getResult();
         if (result != null) {
@@ -39,8 +37,7 @@ public class Notifier {
         payload.put("displayName", run.getDisplayName());
         payload.put("number", run.getNumber());
         payload.put("id", run.getId());
-        payload.put("externalizableId", run.getExternalizableId());
-        payload.put("url", run.getUrl());
+        payload.put("url", jenkinsUrl + run.getUrl());
 
         final var actions = run.getActions(BuildData.class);
         if (!actions.isEmpty()) {
