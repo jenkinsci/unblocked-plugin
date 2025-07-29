@@ -10,12 +10,14 @@ import javax.annotation.Nullable;
 
 public class Http {
 
-    private static final String BASEURL = "https://dev.getunblocked.com";
+    private static final String BASEURL = "https://getunblocked.com";
 
     private static final Duration TIMEOUT = Duration.ofSeconds(30);
 
-    private static final HttpClient CLIENT =
-            HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
+    private static final HttpClient CLIENT = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(10))
+            .version(HttpClient.Version.HTTP_1_1)
+            .build();
 
     public static HttpResponse<String> post(String body) {
         return post(BASEURL, body);
