@@ -23,45 +23,63 @@ public class Notifier {
     }
 
     private static Map<String, Object> buildPayload(final Run<?, ?> run) {
-        final var jenkinsUrl = Jenkins.get().getRootUrl();
-
         final var payload = new TreeMap<String, Object>();
-        payload.put("_class", NotifyStep.class.getName());
+        injectJenkins(payload, run);
+        injectRepo(payload, run);
+        injectRun(payload, run);
+        return payload;
+    }
+
+    private static void injectJenkins(final Map<String, Object> payload, final Run<?, ?> run) {
+        var jenkins = Jenkins.get();
+        payload.put("jenkinsUrl", jenkins.getRootUrl());
+
+        var plugin = jenkins.getPluginManager().getPlugin("unblocked");
+        if (plugin != null) {
+            payload.put("pluginVersion", plugin.getVersion());
+        }
+    }
+
+    private static void injectRepo(Map<String, Object> payload, final Run<?, ?> run) {
+        final var actions = run.getActions(BuildData.class);
+
+        if (actions.isEmpty()) {
+            return;
+        }
+
+        final BuildData data = actions.get(0);
+        if (!data.remoteUrls.isEmpty()) {
+            payload.put("repoUrl", data.remoteUrls.toArray()[0].toString());
+        }
+
+        if (!data.buildsByBranchName.isEmpty()) {
+            final var branch = data.buildsByBranchName.keySet().toArray()[0].toString();
+            payload.put("repoBranch", branch);
+            final var build = data.buildsByBranchName.get(branch);
+            if (build != null) {
+                final var revision = build.getRevision();
+                if (revision != null) {
+                    payload.put("repoVersion", revision.getSha1().name());
+                }
+            }
+        }
+    }
+
+    private static void injectRun(final Map<String, Object> payload, final Run<?, ?> run) {
+        payload.put("runId", run.getId());
+        payload.put("runNumber", run.getNumber());
+        payload.put("runSlug", run.getUrl());
+        payload.put("runDisplayName", run.getDisplayName());
 
         final var result = run.getResult();
         if (result != null) {
-            payload.put("result", result.toString());
+            payload.put("runResult", result.toString());
         }
-        payload.put("startedAt", run.getStartTimeInMillis());
-        payload.put("duration", run.getDuration());
+
+        payload.put("runStartedAt", run.getStartTimeInMillis());
+        payload.put("runDuration", run.getDuration());
         if (result != null && result.isCompleteBuild()) {
-            payload.put("endedAt", run.getStartTimeInMillis() + run.getDuration());
+            payload.put("runEndedAt", run.getStartTimeInMillis() + run.getDuration());
         }
-
-        payload.put("displayName", run.getDisplayName());
-        payload.put("number", run.getNumber());
-        payload.put("id", run.getId());
-        payload.put("url", jenkinsUrl + run.getUrl());
-
-        final var actions = run.getActions(BuildData.class);
-        if (!actions.isEmpty()) {
-            final BuildData data = actions.get(0);
-            if (!data.buildsByBranchName.isEmpty()) {
-                final var branch = data.buildsByBranchName.keySet().toArray()[0].toString();
-                payload.put("repoBranch", branch);
-                final var build = data.buildsByBranchName.get(branch);
-                if (build != null) {
-                    final var revision = build.getRevision();
-                    if (revision != null) {
-                        payload.put("repoVersion", revision.getSha1().name());
-                    }
-                }
-            }
-            if (!data.remoteUrls.isEmpty()) {
-                payload.put("repo", data.remoteUrls.toArray()[0].toString());
-            }
-        }
-
-        return payload;
     }
 }
