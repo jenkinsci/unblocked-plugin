@@ -66,6 +66,7 @@ public class Notifier {
     }
 
     private static void injectRun(final Map<String, Object> payload, final Run<?, ?> run) {
+        payload.put("runType", run.getClass().getName());
         payload.put("runId", run.getId());
         payload.put("runNumber", run.getNumber());
         payload.put("runSlug", run.getUrl());
