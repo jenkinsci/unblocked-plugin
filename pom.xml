@@ -9,7 +9,7 @@
     <relativePath />
   </parent>
 
-  <groupId>com.nextchaptersoftware.jenkins</groupId>
+  <groupId>io.jenkins.plugins.unblocked</groupId>
   <artifactId>unblocked</artifactId>
   <version>${revision}${changelist}</version>
   <packaging>hpi</packaging>
