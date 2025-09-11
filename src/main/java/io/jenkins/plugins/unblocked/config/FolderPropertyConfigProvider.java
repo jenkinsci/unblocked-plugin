@@ -15,8 +15,7 @@ public class FolderPropertyConfigProvider implements UnblockedConfigProvider {
     public @Nullable UnblockedConfig getUnblockedConfig(@NonNull Run<?, ?> run) {
         var job = run.getParent();
         var current = job.getParent();
-        while (current instanceof AbstractFolder) {
-            var folder = (AbstractFolder<?>) current;
+        while (current instanceof AbstractFolder<?> folder) {
             var prop = folder.getProperties().get(UnblockedFolderProperty.class);
             if (prop != null) {
                 return prop.getConfig();
