@@ -3,17 +3,14 @@ package io.jenkins.plugins.unblocked.properties;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.model.Job;
-import hudson.util.FormValidation;
 import io.jenkins.plugins.unblocked.UnblockedConfig;
 import jenkins.model.OptionalJobProperty;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.verb.POST;
 
 public class UnblockedJobProperty extends OptionalJobProperty<Job<?, ?>> {
 
-    private final UnblockedConfig config = new UnblockedConfig();
+    private UnblockedConfig config = new UnblockedConfig();
 
     @DataBoundConstructor
     public UnblockedJobProperty() {}
@@ -22,22 +19,9 @@ public class UnblockedJobProperty extends OptionalJobProperty<Job<?, ?>> {
         return config;
     }
 
-    public String getBaseUrl() {
-        return config.getBaseUrl();
-    }
-
     @DataBoundSetter
-    public void setBaseUrl(String baseUrl) {
-        config.setBaseUrl(baseUrl);
-    }
-
-    public String getSignature() {
-        return config.getSignature();
-    }
-
-    @DataBoundSetter
-    public void setSignature(String signature) {
-        config.setSignature(signature);
+    public void setConfig(UnblockedConfig config) {
+        this.config = config;
     }
 
     @Extension
@@ -52,16 +36,6 @@ public class UnblockedJobProperty extends OptionalJobProperty<Job<?, ?>> {
         @Override
         public boolean isApplicable(Class<? extends Job> jobType) {
             return true;
-        }
-
-        @POST
-        public FormValidation doCheckBaseUrl(@QueryParameter String value) {
-            return UnblockedConfig.doCheckBaseUrl(value);
-        }
-
-        @POST
-        public FormValidation doCheckSignature(@QueryParameter String value) {
-            return UnblockedConfig.doCheckSignature(value);
         }
     }
 }

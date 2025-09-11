@@ -1,53 +1,33 @@
 package io.jenkins.plugins.unblocked;
 
 import hudson.Extension;
-import hudson.util.FormValidation;
 import jenkins.model.GlobalConfiguration;
 import org.kohsuke.stapler.DataBoundSetter;
-import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.verb.POST;
 
 @Extension
 public class UnblockedGlobalConfiguration extends GlobalConfiguration {
 
-    private String baseUrl;
-    private String signature;
+    private UnblockedConfig config = new UnblockedConfig();
 
     public UnblockedGlobalConfiguration() {
         load();
     }
 
-    public static UnblockedGlobalConfiguration get() {
-        return GlobalConfiguration.all().get(UnblockedGlobalConfiguration.class);
+    public static UnblockedConfig get() {
+        var globalConfig = GlobalConfiguration.all().get(UnblockedGlobalConfiguration.class);
+        if (globalConfig == null) {
+            return new UnblockedConfig();
+        }
+        return globalConfig.getConfig();
     }
 
-    public String getBaseUrl() {
-        return baseUrl;
-    }
-
-    @DataBoundSetter
-    public void setBaseUrl(String baseUrl) {
-        this.baseUrl = UnblockedConfig.doNormalizeBaseUrl(baseUrl);
-        save();
-    }
-
-    @POST
-    public FormValidation doCheckBaseUrl(@QueryParameter String value) {
-        return UnblockedConfig.doCheckBaseUrl(value);
-    }
-
-    public String getSignature() {
-        return signature;
+    public UnblockedConfig getConfig() {
+        return config;
     }
 
     @DataBoundSetter
-    public void setSignature(String signature) {
-        this.signature = UnblockedConfig.doNormalizeSignature(signature);
+    public void setConfig(UnblockedConfig config) {
+        this.config = config;
         save();
-    }
-
-    @POST
-    public FormValidation doCheckSignature(@QueryParameter String value) {
-        return UnblockedConfig.doCheckSignature(value);
     }
 }
