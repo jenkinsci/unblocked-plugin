@@ -9,6 +9,7 @@ import jenkins.model.OptionalJobProperty;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.verb.POST;
 
 public class UnblockedJobProperty extends OptionalJobProperty<Job<?, ?>> {
 
@@ -53,10 +54,12 @@ public class UnblockedJobProperty extends OptionalJobProperty<Job<?, ?>> {
             return true;
         }
 
+        @POST
         public FormValidation doCheckBaseUrl(@QueryParameter String value) {
             return UnblockedConfig.doCheckBaseUrl(value);
         }
 
+        @POST
         public FormValidation doCheckSignature(@QueryParameter String value) {
             return UnblockedConfig.doCheckSignature(value);
         }

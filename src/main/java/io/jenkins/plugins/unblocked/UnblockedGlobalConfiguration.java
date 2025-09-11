@@ -5,6 +5,7 @@ import hudson.util.FormValidation;
 import jenkins.model.GlobalConfiguration;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.verb.POST;
 
 @Extension
 public class UnblockedGlobalConfiguration extends GlobalConfiguration {
@@ -30,6 +31,7 @@ public class UnblockedGlobalConfiguration extends GlobalConfiguration {
         save();
     }
 
+    @POST
     public FormValidation doCheckBaseUrl(@QueryParameter String value) {
         return UnblockedConfig.doCheckBaseUrl(value);
     }
@@ -44,6 +46,7 @@ public class UnblockedGlobalConfiguration extends GlobalConfiguration {
         save();
     }
 
+    @POST
     public FormValidation doCheckSignature(@QueryParameter String value) {
         return UnblockedConfig.doCheckSignature(value);
     }

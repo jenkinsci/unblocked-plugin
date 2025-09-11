@@ -4,6 +4,7 @@ import hudson.util.FormValidation;
 import io.jenkins.plugins.unblocked.utils.Urls;
 import java.util.Objects;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.verb.POST;
 
 public class UnblockedConfig {
 
@@ -22,6 +23,7 @@ public class UnblockedConfig {
         return baseUrl == null || baseUrl.isBlank() ? null : baseUrl;
     }
 
+    @POST
     public static FormValidation doCheckBaseUrl(@QueryParameter String value) {
         if (value == null || value.isBlank() || Urls.isValid(value)) {
             return FormValidation.ok();
@@ -41,6 +43,7 @@ public class UnblockedConfig {
         return Objects.requireNonNull(signature, "Missing required signature");
     }
 
+    @POST
     public static FormValidation doCheckSignature(@QueryParameter String value) {
         if (value == null) {
             return FormValidation.error("Signature is required");
