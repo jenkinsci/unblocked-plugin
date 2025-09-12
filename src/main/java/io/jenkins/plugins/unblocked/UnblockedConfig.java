@@ -5,6 +5,7 @@ import hudson.model.Describable;
 import hudson.model.Descriptor;
 import hudson.security.Permission;
 import hudson.util.FormValidation;
+import hudson.util.Secret;
 import io.jenkins.plugins.unblocked.utils.Urls;
 import java.util.Objects;
 import jenkins.model.Jenkins;
@@ -16,7 +17,7 @@ import org.kohsuke.stapler.verb.POST;
 public class UnblockedConfig implements Describable<UnblockedConfig> {
 
     private String baseUrl;
-    private String signature;
+    private Secret signature;
 
     @DataBoundConstructor
     public UnblockedConfig() {}
@@ -43,16 +44,16 @@ public class UnblockedConfig implements Describable<UnblockedConfig> {
         return FormValidation.error("Invalid URL");
     }
 
-    public String getSignature() {
+    public Secret getSignature() {
         return signature;
     }
 
     @DataBoundSetter
-    public void setSignature(String signature) {
+    public void setSignature(Secret signature) {
         this.signature = doNormalizeSignature(signature);
     }
 
-    public static String doNormalizeSignature(String signature) {
+    public static Secret doNormalizeSignature(Secret signature) {
         return Objects.requireNonNull(signature, "Missing required signature");
     }
 

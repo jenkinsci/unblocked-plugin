@@ -4,6 +4,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.model.Run;
 import hudson.plugins.git.util.BuildData;
+import hudson.util.Secret;
 import io.jenkins.plugins.unblocked.UnblockedPlugin;
 import io.jenkins.plugins.unblocked.utils.Http;
 import io.jenkins.plugins.unblocked.utils.Json;
@@ -17,7 +18,7 @@ public class Notifier {
     private static final String eventType = "Notify";
 
     public static HttpResponse<String> submit(
-            @Nullable String baseUrl, @NonNull String signature, @NonNull Run<?, ?> run) {
+            @Nullable String baseUrl, @NonNull Secret signature, @NonNull Run<?, ?> run) {
         final var payload = buildPayload(run);
         final var json = Json.stringify(payload);
         return Http.post(baseUrl, eventType, json, signature);

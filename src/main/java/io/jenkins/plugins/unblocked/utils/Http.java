@@ -1,6 +1,7 @@
 package io.jenkins.plugins.unblocked.utils;
 
 import edu.umd.cs.findbugs.annotations.Nullable;
+import hudson.util.Secret;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -23,7 +24,7 @@ public class Http {
             .version(HttpClient.Version.HTTP_1_1)
             .build();
 
-    public static HttpResponse<String> post(@Nullable String baseUrl, String eventType, String body, String signature) {
+    public static HttpResponse<String> post(@Nullable String baseUrl, String eventType, String body, Secret signature) {
         if (signature == null) {
             LOGGER.log(Level.SEVERE, "Missing signature");
             return null;
@@ -37,7 +38,7 @@ public class Http {
                 .uri(URI.create(url))
                 .header("Content-Type", "application/json")
                 .header("X-Jenkins-Event", eventType)
-                .header("X-Jenkins-Signature", signature)
+                .header("X-Jenkins-Signature", signature.getPlainText())
                 .POST(payload)
                 .timeout(TIMEOUT)
                 .build();
