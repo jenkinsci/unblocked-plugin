@@ -32,6 +32,12 @@ public class Notifier {
 
     private static void injectJenkins(final Map<String, Object> payload, final Run<?, ?> run) {
         var jenkins = Jenkins.get();
+
+        var version = Jenkins.getVersion();
+        if (version != null) {
+            payload.put("jenkinsVersion", version.toString());
+        }
+
         payload.put("jenkinsUrl", jenkins.getRootUrl());
 
         var plugin = jenkins.getPluginManager().getPlugin("unblocked");
