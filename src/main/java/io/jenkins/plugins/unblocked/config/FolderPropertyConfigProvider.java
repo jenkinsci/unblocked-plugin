@@ -2,11 +2,11 @@ package io.jenkins.plugins.unblocked.config;
 
 import com.cloudbees.hudson.plugins.folder.AbstractFolder;
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.Extension;
 import hudson.model.Run;
 import io.jenkins.plugins.unblocked.UnblockedConfig;
 import io.jenkins.plugins.unblocked.properties.UnblockedFolderProperty;
-import javax.annotation.Nullable;
 
 @Extension
 public class FolderPropertyConfigProvider implements UnblockedConfigProvider {

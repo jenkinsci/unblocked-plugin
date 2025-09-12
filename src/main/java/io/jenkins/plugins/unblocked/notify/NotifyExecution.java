@@ -1,12 +1,12 @@
 package io.jenkins.plugins.unblocked.notify;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.ExtensionList;
 import hudson.model.Run;
 import io.jenkins.plugins.unblocked.UnblockedGlobalConfiguration;
 import io.jenkins.plugins.unblocked.config.UnblockedConfigProvider;
 import io.jenkins.plugins.unblocked.utils.Urls;
-import javax.annotation.Nullable;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution;
 

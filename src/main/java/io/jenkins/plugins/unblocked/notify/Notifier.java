@@ -1,6 +1,7 @@
 package io.jenkins.plugins.unblocked.notify;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.model.Run;
 import hudson.plugins.git.util.BuildData;
 import io.jenkins.plugins.unblocked.utils.Http;
@@ -8,7 +9,6 @@ import io.jenkins.plugins.unblocked.utils.Json;
 import java.net.http.HttpResponse;
 import java.util.Map;
 import java.util.TreeMap;
-import javax.annotation.Nullable;
 import jenkins.model.Jenkins;
 
 public class Notifier {
