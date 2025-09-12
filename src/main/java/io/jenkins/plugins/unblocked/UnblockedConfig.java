@@ -35,15 +35,6 @@ public class UnblockedConfig implements Describable<UnblockedConfig> {
         return baseUrl == null || baseUrl.isBlank() ? null : baseUrl;
     }
 
-    @POST
-    public static FormValidation doCheckBaseUrl(@QueryParameter String value) {
-        Jenkins.get().checkPermission(Permission.CONFIGURE);
-        if (value == null || value.isBlank() || Urls.isValid(value)) {
-            return FormValidation.ok();
-        }
-        return FormValidation.error("Invalid URL");
-    }
-
     public Secret getSignature() {
         return signature;
     }
@@ -57,38 +48,25 @@ public class UnblockedConfig implements Describable<UnblockedConfig> {
         return Objects.requireNonNull(signature, "Missing required signature");
     }
 
-    @POST
-    public static FormValidation doCheckSignature(@QueryParameter String value) {
-        Jenkins.get().checkPermission(Permission.CONFIGURE);
-        if (value == null) {
-            return FormValidation.error("Signature is required");
-        }
-        return FormValidation.ok();
-    }
-
-    @Override
-    public Descriptor<UnblockedConfig> getDescriptor() {
-        return new DescriptorImpl();
-    }
-
     @Extension
     public static final class DescriptorImpl extends Descriptor<UnblockedConfig> {
-
-        @Override
-        public String getDisplayName() {
-            return "Unblocked Configuration";
-        }
 
         @POST
         public FormValidation doCheckBaseUrl(@QueryParameter String value) {
             Jenkins.get().checkPermission(Permission.CONFIGURE);
-            return UnblockedConfig.doCheckBaseUrl(value);
+            if (value == null || value.isBlank() || Urls.isValid(value)) {
+                return FormValidation.ok();
+            }
+            return FormValidation.error("Invalid URL");
         }
 
         @POST
         public FormValidation doCheckSignature(@QueryParameter String value) {
             Jenkins.get().checkPermission(Permission.CONFIGURE);
-            return UnblockedConfig.doCheckSignature(value);
+            if (value == null) {
+                return FormValidation.error("Signature is required");
+            }
+            return FormValidation.ok();
         }
     }
 }
