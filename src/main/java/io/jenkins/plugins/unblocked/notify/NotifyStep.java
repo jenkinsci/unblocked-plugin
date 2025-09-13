@@ -4,6 +4,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.Extension;
 import hudson.model.Run;
+import hudson.util.Secret;
 import java.util.Collections;
 import java.util.Set;
 import org.jenkinsci.plugins.workflow.steps.Step;
@@ -22,7 +23,7 @@ public class NotifyStep extends Step {
     private String baseUrl;
 
     @Nullable
-    private String signature;
+    private Secret signature;
 
     @DataBoundSetter
     public void setBaseUrl(@Nullable String baseUrl) {
@@ -31,7 +32,7 @@ public class NotifyStep extends Step {
 
     @DataBoundSetter
     public void setSignature(@Nullable String signature) {
-        this.signature = signature;
+        this.signature = Secret.fromString(signature);
     }
 
     @Override

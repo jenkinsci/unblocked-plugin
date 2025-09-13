@@ -1,20 +1,32 @@
 package io.jenkins.plugins.unblocked;
 
+import hudson.Extension;
+import hudson.model.Describable;
+import hudson.model.Descriptor;
+import hudson.security.Permission;
 import hudson.util.FormValidation;
+import hudson.util.Secret;
 import io.jenkins.plugins.unblocked.utils.Urls;
 import java.util.Objects;
+import jenkins.model.Jenkins;
+import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.verb.POST;
 
-public class UnblockedConfig {
+public class UnblockedConfig implements Describable<UnblockedConfig> {
 
     private String baseUrl;
-    private String signature;
+    private Secret signature;
+
+    @DataBoundConstructor
+    public UnblockedConfig() {}
 
     public String getBaseUrl() {
         return baseUrl;
     }
 
+    @DataBoundSetter
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = doNormalizeBaseUrl(baseUrl);
     }
@@ -23,31 +35,42 @@ public class UnblockedConfig {
         return baseUrl == null || baseUrl.isBlank() ? null : baseUrl;
     }
 
-    @POST
-    public static FormValidation doCheckBaseUrl(@QueryParameter String value) {
-        if (value == null || value.isBlank() || Urls.isValid(value)) {
-            return FormValidation.ok();
-        }
-        return FormValidation.error("Invalid URL");
-    }
-
-    public String getSignature() {
+    public Secret getSignature() {
         return signature;
     }
 
-    public void setSignature(String signature) {
+    @DataBoundSetter
+    public void setSignature(Secret signature) {
         this.signature = doNormalizeSignature(signature);
     }
 
-    public static String doNormalizeSignature(String signature) {
+    public static Secret doNormalizeSignature(Secret signature) {
         return Objects.requireNonNull(signature, "Missing required signature");
     }
 
-    @POST
-    public static FormValidation doCheckSignature(@QueryParameter String value) {
-        if (value == null) {
-            return FormValidation.error("Signature is required");
+    @Extension
+    public static final class DescriptorImpl extends Descriptor<UnblockedConfig> {
+
+        @POST
+        public FormValidation doCheckBaseUrl(@QueryParameter String value) {
+            Jenkins.get().checkPermission(Permission.CONFIGURE);
+            if (value == null || value.isBlank() || Urls.isValid(value)) {
+                return FormValidation.ok();
+            }
+            return FormValidation.error("Invalid URL");
         }
-        return FormValidation.ok();
+
+        @POST
+        public FormValidation doCheckSignature(@QueryParameter String value) {
+            Jenkins.get().checkPermission(Permission.CONFIGURE);
+            if (value == null) {
+                return FormValidation.error("Signature is required");
+            }
+            return FormValidation.ok();
+        }
+
+        public boolean isBaseUrlVisible() {
+            return UnblockedPlugin.get().isSnapshot();
+        }
     }
 }

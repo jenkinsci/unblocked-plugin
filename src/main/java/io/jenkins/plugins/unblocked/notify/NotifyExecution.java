@@ -4,6 +4,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.ExtensionList;
 import hudson.model.Run;
+import hudson.util.Secret;
 import io.jenkins.plugins.unblocked.UnblockedGlobalConfiguration;
 import io.jenkins.plugins.unblocked.config.UnblockedConfigProvider;
 import io.jenkins.plugins.unblocked.utils.Urls;
@@ -16,9 +17,9 @@ public class NotifyExecution extends SynchronousNonBlockingStepExecution<Void> {
     private final String baseUrl;
 
     @Nullable
-    private final String signature;
+    private final Secret signature;
 
-    public NotifyExecution(@NonNull StepContext context, @Nullable String baseUrl, @Nullable String signature) {
+    public NotifyExecution(@NonNull StepContext context, @Nullable String baseUrl, @Nullable Secret signature) {
         super(context);
         this.baseUrl = baseUrl;
         this.signature = signature;
@@ -55,7 +56,7 @@ public class NotifyExecution extends SynchronousNonBlockingStepExecution<Void> {
         return UnblockedGlobalConfiguration.get().getBaseUrl();
     }
 
-    private String getSignature(Run<?, ?> run) {
+    private Secret getSignature(Run<?, ?> run) {
         if (signature != null) {
             return signature;
         }
