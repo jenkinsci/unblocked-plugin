@@ -4,6 +4,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.model.Run;
 import hudson.plugins.git.util.BuildData;
+import io.jenkins.plugins.unblocked.UnblockedPlugin;
 import io.jenkins.plugins.unblocked.utils.Http;
 import io.jenkins.plugins.unblocked.utils.Json;
 import java.net.http.HttpResponse;
@@ -39,11 +40,7 @@ public class Notifier {
         }
 
         payload.put("jenkinsUrl", jenkins.getRootUrl());
-
-        var plugin = jenkins.getPluginManager().getPlugin("unblocked");
-        if (plugin != null) {
-            payload.put("pluginVersion", plugin.getVersion());
-        }
+        payload.put("pluginVersion", UnblockedPlugin.get().getVersion());
     }
 
     private static void injectRepo(Map<String, Object> payload, final Run<?, ?> run) {
