@@ -13,6 +13,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 public class UnblockedFolderProperty extends AbstractFolderProperty<AbstractFolder<?>> {
 
     private UnblockedConfig config;
+    private transient boolean enabled;
 
     @DataBoundConstructor
     public UnblockedFolderProperty() {}
@@ -24,11 +25,19 @@ public class UnblockedFolderProperty extends AbstractFolderProperty<AbstractFold
 
     @DataBoundSetter
     public void setConfig(UnblockedConfig config) {
-        this.config = config;
+        this.config = enabled ? config : null;
     }
 
     public boolean isEnabled() {
         return config != null;
+    }
+
+    @DataBoundSetter
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+        if (!enabled) {
+            this.config = null;
+        }
     }
 
     @Extension
