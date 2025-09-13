@@ -3,6 +3,7 @@ package io.jenkins.plugins.unblocked.properties;
 import com.cloudbees.hudson.plugins.folder.AbstractFolder;
 import com.cloudbees.hudson.plugins.folder.AbstractFolderProperty;
 import com.cloudbees.hudson.plugins.folder.AbstractFolderPropertyDescriptor;
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import io.jenkins.plugins.unblocked.UnblockedConfig;
@@ -11,11 +12,12 @@ import org.kohsuke.stapler.DataBoundSetter;
 
 public class UnblockedFolderProperty extends AbstractFolderProperty<AbstractFolder<?>> {
 
-    private UnblockedConfig config = new UnblockedConfig();
+    private UnblockedConfig config;
 
     @DataBoundConstructor
     public UnblockedFolderProperty() {}
 
+    @CheckForNull
     public UnblockedConfig getConfig() {
         return config;
     }
@@ -23,6 +25,10 @@ public class UnblockedFolderProperty extends AbstractFolderProperty<AbstractFold
     @DataBoundSetter
     public void setConfig(UnblockedConfig config) {
         this.config = config;
+    }
+
+    public boolean isEnabled() {
+        return config != null;
     }
 
     @Extension

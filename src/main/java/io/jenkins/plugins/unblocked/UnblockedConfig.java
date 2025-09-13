@@ -68,5 +68,9 @@ public class UnblockedConfig implements Describable<UnblockedConfig> {
             }
             return FormValidation.ok();
         }
+
+        public boolean isBaseUrlVisible() {
+            return UnblockedPlugin.get().isSnapshot();
+        }
     }
 }
