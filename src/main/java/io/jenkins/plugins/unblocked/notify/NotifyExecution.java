@@ -29,31 +29,19 @@ public class NotifyExecution extends SynchronousNonBlockingStepExecution<Void> {
     protected Void run() throws Exception {
         final var run = getContext().get(Run.class);
         if (run != null) {
-            final var baseUrl = getBaseUrl(run);
+            final var baseUrl = getBaseUrl();
             final var signature = getSignature(run);
             Notifier.submit(baseUrl, signature, run);
         }
         return null;
     }
 
-    private String getBaseUrl(Run<?, ?> run) {
-        if (baseUrl != null) {
-            if (Urls.isValid(baseUrl)) {
-                return baseUrl;
-            }
+    @Nullable
+    private String getBaseUrl() {
+        if (baseUrl != null && !Urls.isValid(baseUrl)) {
             throw new IllegalArgumentException("Invalid URL: " + baseUrl);
         }
-
-        for (final var provider : ExtensionList.lookup(UnblockedConfigProvider.class)) {
-            var config = provider.getUnblockedConfig(run);
-            if (config != null) {
-                var baseUrl = config.getBaseUrl();
-                if (baseUrl != null) {
-                    return baseUrl;
-                }
-            }
-        }
-        return UnblockedGlobalConfiguration.get().getBaseUrl();
+        return baseUrl;
     }
 
     private Secret getSignature(Run<?, ?> run) {

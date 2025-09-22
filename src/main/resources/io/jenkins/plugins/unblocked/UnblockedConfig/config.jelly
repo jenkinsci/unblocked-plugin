@@ -3,9 +3,4 @@
     <f:entry title="Signature" field="signature">
         <f:password clazz="required"/>
     </f:entry>
-    <j:if test="${descriptor.baseUrlVisible}">
-        <f:entry title="Base URL" field="baseUrl">
-            <f:textbox placeholder="https://getunblocked.com" />
-        </f:entry>
-    </j:if>
 </j:jelly>

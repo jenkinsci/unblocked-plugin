@@ -16,24 +16,10 @@ import org.kohsuke.stapler.verb.POST;
 
 public class UnblockedConfig implements Describable<UnblockedConfig> {
 
-    private String baseUrl;
     private Secret signature;
 
     @DataBoundConstructor
     public UnblockedConfig() {}
-
-    public String getBaseUrl() {
-        return baseUrl;
-    }
-
-    @DataBoundSetter
-    public void setBaseUrl(String baseUrl) {
-        this.baseUrl = doNormalizeBaseUrl(baseUrl);
-    }
-
-    public static String doNormalizeBaseUrl(String baseUrl) {
-        return baseUrl == null || baseUrl.isBlank() ? null : baseUrl;
-    }
 
     public Secret getSignature() {
         return signature;
@@ -67,10 +53,6 @@ public class UnblockedConfig implements Describable<UnblockedConfig> {
                 return FormValidation.error("Signature is required");
             }
             return FormValidation.ok();
-        }
-
-        public boolean isBaseUrlVisible() {
-            return UnblockedPlugin.get().isSnapshot();
         }
     }
 }

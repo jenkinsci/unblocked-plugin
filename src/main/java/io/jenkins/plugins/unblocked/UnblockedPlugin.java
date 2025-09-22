@@ -18,8 +18,4 @@ public record UnblockedPlugin(PluginWrapper plugin) {
     public String getVersion() {
         return plugin.getVersion();
     }
-
-    public boolean isSnapshot() {
-        return getVersion().endsWith("-SNAPSHOT");
-    }
 }
