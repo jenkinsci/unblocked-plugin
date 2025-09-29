@@ -1,6 +1,7 @@
 package io.jenkins.plugins.unblocked.utils;
 
 import edu.umd.cs.findbugs.annotations.Nullable;
+import hudson.ProxyConfiguration;
 import hudson.util.Secret;
 import java.io.IOException;
 import java.net.URI;
@@ -19,10 +20,12 @@ public class Http {
 
     private static final Duration TIMEOUT = Duration.ofSeconds(30);
 
-    private static final HttpClient CLIENT = HttpClient.newBuilder()
-            .connectTimeout(Duration.ofSeconds(10))
-            .version(HttpClient.Version.HTTP_1_1)
-            .build();
+    private static HttpClient createClient() {
+        return ProxyConfiguration.newHttpClientBuilder()
+                .connectTimeout(Duration.ofSeconds(10))
+                .version(HttpClient.Version.HTTP_1_1)
+                .build();
+    }
 
     public static HttpResponse<String> post(@Nullable String baseUrl, String eventType, String body, Secret signature) {
         if (signature == null) {
@@ -34,8 +37,7 @@ public class Http {
         final var payload = HttpRequest.BodyPublishers.ofString(body);
 
         @SuppressWarnings("UastIncorrectHttpHeaderInspection")
-        final var request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
+        final var request = ProxyConfiguration.newHttpRequestBuilder(URI.create(url))
                 .header("Content-Type", "application/json")
                 .header("X-Jenkins-Event", eventType)
                 .header("X-Jenkins-Signature", signature.getPlainText())
@@ -45,7 +47,8 @@ public class Http {
 
         try {
             LOGGER.log(Level.INFO, "request: {0}", url);
-            return CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+            var client = createClient();
+            return client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
             LOGGER.log(Level.SEVERE, e, () -> "request: " + url);
             throw new RuntimeException(e);
