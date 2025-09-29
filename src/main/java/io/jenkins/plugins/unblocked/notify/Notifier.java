@@ -12,6 +12,10 @@ import java.net.http.HttpResponse;
 import java.util.Map;
 import java.util.TreeMap;
 import jenkins.model.Jenkins;
+import jenkins.plugins.git.AbstractGitSCMSource;
+import jenkins.scm.api.SCMRevision;
+import jenkins.scm.api.SCMRevisionAction;
+import jenkins.scm.api.SCMSource;
 
 public class Notifier {
 
@@ -45,25 +49,51 @@ public class Notifier {
     }
 
     private static void injectRepo(Map<String, Object> payload, final Run<?, ?> run) {
-        final var actions = run.getActions(BuildData.class);
+        //
+        final var scmRevisionAction = run.getAction(SCMRevisionAction.class);
+        if (scmRevisionAction != null) {
+            final var scmSource = SCMSource.SourceByItem.findSource(run.getParent());
+            if (scmSource instanceof AbstractGitSCMSource gitSource) {
+                final var repoUrl = gitSource.getRemote();
+                if (repoUrl != null) {
+                    payload.put("repoUrl", repoUrl);
+                }
+            }
 
-        if (actions.isEmpty()) {
-            return;
+            final SCMRevision revision = scmRevisionAction.getRevision();
+            payload.put("repoBranch", revision.getHead().getName());
+            payload.put("repoVersion", revision.toString());
         }
 
-        final BuildData data = actions.get(0);
-        if (!data.remoteUrls.isEmpty()) {
-            payload.put("repoUrl", data.remoteUrls.toArray()[0].toString());
+        if (!payload.containsKey("repoUrl")) {
+            for (var action : run.getActions(BuildData.class)) {
+                var it = action.remoteUrls.iterator();
+                if (it.hasNext()) {
+                    var repoUrl = it.next();
+                    if (repoUrl != null) {
+                        payload.put("repoUrl", repoUrl);
+                        break;
+                    }
+                }
+            }
         }
 
-        if (!data.buildsByBranchName.isEmpty()) {
-            final var branch = data.buildsByBranchName.keySet().toArray()[0].toString();
-            payload.put("repoBranch", branch);
-            final var build = data.buildsByBranchName.get(branch);
-            if (build != null) {
-                final var revision = build.getRevision();
-                if (revision != null) {
-                    payload.put("repoVersion", revision.getSha1().name());
+        if (!payload.containsKey("repoBranch")) {
+            for (var action : run.getActions(BuildData.class)) {
+                final var it = action.buildsByBranchName.keySet().iterator();
+                if (it.hasNext()) {
+                    final var branch = it.next();
+                    if (branch != null) {
+                        payload.put("repoBranch", branch);
+                        final var build = action.buildsByBranchName.get(branch);
+                        if (build != null) {
+                            final var revision = build.getRevision();
+                            if (revision != null) {
+                                payload.put("repoVersion", revision.getSha1().name());
+                            }
+                        }
+                    }
+                    break;
                 }
             }
         }

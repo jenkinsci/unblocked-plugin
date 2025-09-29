@@ -49,6 +49,10 @@ public class NotifyExecution extends SynchronousNonBlockingStepExecution<Void> {
         if (signature != null) {
             return signature;
         }
+        return extractSignature(run);
+    }
+
+    static Secret extractSignature(Run<?, ?> run) {
         for (final var provider : ExtensionList.lookup(UnblockedConfigProvider.class)) {
             var config = provider.getUnblockedConfig(run);
             if (config != null) {
