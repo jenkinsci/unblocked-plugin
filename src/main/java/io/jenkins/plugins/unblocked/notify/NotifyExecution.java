@@ -5,10 +5,10 @@ import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.ExtensionList;
 import hudson.model.Run;
 import hudson.util.Secret;
-import io.jenkins.cli.shaded.org.apache.commons.lang.StringUtils;
 import io.jenkins.plugins.unblocked.UnblockedGlobalConfiguration;
 import io.jenkins.plugins.unblocked.config.UnblockedConfigProvider;
 import io.jenkins.plugins.unblocked.utils.Urls;
+import org.apache.commons.lang3.StringUtils;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution;
 
