@@ -11,7 +11,7 @@
 
   <groupId>io.jenkins.plugins</groupId>
   <artifactId>unblocked</artifactId>
-  <version>${revision}${changelist}</version>
+  <version>${revision}.${changelist}</version>
   <packaging>hpi</packaging>
 
   <name>Unblocked Notify Plugin</name>
@@ -33,8 +33,8 @@
   </scm>
 
   <properties>
-    <revision>1.0</revision>
-    <changelist>-SNAPSHOT</changelist>
+    <revision>1</revision>
+    <changelist>999999-SNAPSHOT</changelist>
     <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
     <jenkins.baseline>2.516</jenkins.baseline>
     <jenkins.version>${jenkins.baseline}.2</jenkins.version>
