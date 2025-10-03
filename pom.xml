@@ -15,7 +15,7 @@
   <packaging>hpi</packaging>
 
   <name>Unblocked Notify Plugin</name>
-  <description>Sends notifications about jobs phases and status to Unblocked</description>
+  <description>Sends notifications to Unblocked</description>
   <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
 
   <licenses>
