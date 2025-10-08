@@ -40,7 +40,7 @@ public class Http {
         final var request = ProxyConfiguration.newHttpRequestBuilder(URI.create(url))
                 .header("Content-Type", "application/json")
                 .header("X-Jenkins-Event", eventType)
-                .header("X-Jenkins-Signature", signature.getPlainText())
+                .header("X-Jenkins-Signature", Hmac.sign(body, signature))
                 .POST(payload)
                 .timeout(TIMEOUT)
                 .build();
