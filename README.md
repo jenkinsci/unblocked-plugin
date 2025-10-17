@@ -12,6 +12,10 @@ resolve the issue.
 
 ### Pipeline Step
 
+The Unblocked plugin is designed to automatically trigger a post-build
+notification. You can optionally add the step manually to your pipeline
+for explicit control, as shown below:
+
 ```groovy
 pipeline {
 
