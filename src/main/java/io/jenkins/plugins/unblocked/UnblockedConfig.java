@@ -34,6 +34,11 @@ public class UnblockedConfig implements Describable<UnblockedConfig> {
         return Objects.requireNonNull(signature, "Missing required signature");
     }
 
+    @Override
+    public DescriptorImpl getDescriptor() {
+        return (DescriptorImpl) Jenkins.get().getDescriptorOrDie(getClass());
+    }
+
     @Extension
     public static final class DescriptorImpl extends Descriptor<UnblockedConfig> {
 

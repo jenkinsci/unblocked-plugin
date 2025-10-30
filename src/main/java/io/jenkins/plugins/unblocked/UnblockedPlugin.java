@@ -2,16 +2,26 @@ package io.jenkins.plugins.unblocked;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.PluginWrapper;
-import java.util.Objects;
 import jenkins.model.Jenkins;
 
-public record UnblockedPlugin(PluginWrapper plugin) {
+public class UnblockedPlugin {
+
+    private final PluginWrapper plugin;
+
+    public UnblockedPlugin(PluginWrapper plugin) {
+        this.plugin = plugin;
+    }
 
     @NonNull
     public static UnblockedPlugin get() {
-        var plugin = Jenkins.get().getPluginManager().getPlugin("unblocked");
-        Objects.requireNonNull(plugin, "Unblocked plugin not found");
-
+        var manager = Jenkins.get().getPluginManager();
+        if (manager == null) {
+            throw new IllegalStateException("Plugin manager not available");
+        }
+        var plugin = manager.getPlugin("unblocked");
+        if (plugin == null) {
+            throw new IllegalStateException("Unblocked plugin not found");
+        }
         return new UnblockedPlugin(plugin);
     }
 
