@@ -1,6 +1,25 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
-    <f:entry title="Signature" field="signature">
-        <f:password clazz="required"/>
+    <f:entry title="Disable Unblocked">
+        <f:checkbox field="disabled" id="unblocked-disabled"/>
     </f:entry>
+    <div id="unblocked-signature">
+        <f:entry title="Signature" field="signature">
+            <f:password/>
+        </f:entry>
+    </div>
+    <script>
+        (function() {
+            var disabled = document.getElementById('unblocked-disabled')
+            var signature = document.getElementById('unblocked-signature')
+
+            function toggleSignature() {
+                signature.style.display = disabled.checked ? 'none' : ''
+            }
+
+            disabled.addEventListener('change', toggleSignature)
+
+            toggleSignature()
+        })();
+    </script>
 </j:jelly>

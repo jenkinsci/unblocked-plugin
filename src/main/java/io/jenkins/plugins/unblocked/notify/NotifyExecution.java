@@ -29,7 +29,7 @@ public class NotifyExecution extends SynchronousNonBlockingStepExecution<Void> {
     @Override
     protected Void run() throws Exception {
         final var run = getContext().get(Run.class);
-        if (run != null) {
+        if (run != null && isEnabled(run)) {
             final var baseUrl = getBaseUrl();
             final var signature = getSignature(run);
             Notifier.submit(baseUrl, signature, run);
@@ -63,5 +63,19 @@ public class NotifyExecution extends SynchronousNonBlockingStepExecution<Void> {
             }
         }
         return UnblockedGlobalConfiguration.get().getSignature();
+    }
+
+    static boolean isEnabled(Run<?, ?> run) {
+        return !isDisabled(run);
+    }
+
+    static boolean isDisabled(Run<?, ?> run) {
+        for (final var provider : ExtensionList.lookup(UnblockedConfigProvider.class)) {
+            var config = provider.getUnblockedConfig(run);
+            if (config != null) {
+                return config.isDisabled();
+            }
+        }
+        return UnblockedGlobalConfiguration.get().isDisabled();
     }
 }
