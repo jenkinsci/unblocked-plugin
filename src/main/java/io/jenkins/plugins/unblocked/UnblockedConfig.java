@@ -7,7 +7,6 @@ import hudson.security.Permission;
 import hudson.util.FormValidation;
 import hudson.util.Secret;
 import io.jenkins.plugins.unblocked.utils.Urls;
-import java.util.Objects;
 import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -17,6 +16,7 @@ import org.kohsuke.stapler.verb.POST;
 public class UnblockedConfig implements Describable<UnblockedConfig> {
 
     private Secret signature;
+    private boolean disabled;
 
     @DataBoundConstructor
     public UnblockedConfig() {}
@@ -27,11 +27,16 @@ public class UnblockedConfig implements Describable<UnblockedConfig> {
 
     @DataBoundSetter
     public void setSignature(Secret signature) {
-        this.signature = doNormalizeSignature(signature);
+        this.signature = signature;
     }
 
-    public static Secret doNormalizeSignature(Secret signature) {
-        return Objects.requireNonNull(signature, "Missing required signature");
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    @DataBoundSetter
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 
     @Override
@@ -52,9 +57,9 @@ public class UnblockedConfig implements Describable<UnblockedConfig> {
         }
 
         @POST
-        public FormValidation doCheckSignature(@QueryParameter String value) {
+        public FormValidation doCheckSignature(@QueryParameter String value, @QueryParameter boolean disabled) {
             Jenkins.get().checkPermission(Permission.CONFIGURE);
-            if (value == null) {
+            if (value == null && !disabled) {
                 return FormValidation.error("Signature is required");
             }
             return FormValidation.ok();

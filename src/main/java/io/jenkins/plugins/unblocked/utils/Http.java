@@ -27,6 +27,7 @@ public class Http {
                 .build();
     }
 
+    @Nullable
     public static HttpResponse<String> post(@Nullable String baseUrl, String eventType, String body, Secret signature) {
         if (signature == null) {
             LOGGER.log(Level.SEVERE, "Missing signature");
@@ -46,12 +47,11 @@ public class Http {
                 .build();
 
         try {
-            LOGGER.log(Level.INFO, "request: {0}", url);
             var client = createClient();
             return client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
             LOGGER.log(Level.SEVERE, e, () -> "request: " + url);
-            throw new RuntimeException(e);
+            return null;
         }
     }
 }
