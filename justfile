@@ -9,6 +9,9 @@ local:
 package:
   mvn spotless:apply install
 
+package-java11:
+  mvn spotless:apply hpi:hpi
+
 package-release:
   mvn spotless:apply install \
     -Dchangelist=${CHANGELIST:-} \

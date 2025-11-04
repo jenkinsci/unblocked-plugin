@@ -53,7 +53,8 @@ public class Notifier {
         final var scmRevisionAction = run.getAction(SCMRevisionAction.class);
         if (scmRevisionAction != null) {
             final var scmSource = SCMSource.SourceByItem.findSource(run.getParent());
-            if (scmSource instanceof AbstractGitSCMSource gitSource) {
+            if (scmSource instanceof AbstractGitSCMSource) {
+                final var gitSource = (AbstractGitSCMSource) scmSource;
                 final var repoUrl = gitSource.getRemote();
                 if (repoUrl != null) {
                     payload.put("repoUrl", repoUrl);
