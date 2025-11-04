@@ -9,22 +9,3 @@ as a comment in your pull request, helping you quickly identify and
 resolve the issue.
 
 > https://getunblocked.com
-
-### Pipeline Step
-
-The Unblocked plugin is designed to automatically trigger a post-build
-notification. You can optionally add the step manually to your pipeline
-for explicit control, as shown below:
-
-```groovy
-pipeline {
-
-    // steps..
-
-    post {
-        always {
-            unblockedNotify()
-        }
-    }
-}
-```
