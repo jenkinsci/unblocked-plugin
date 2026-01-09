@@ -3,19 +3,15 @@ package io.jenkins.plugins.unblocked.notify;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.model.Run;
-import hudson.plugins.git.util.BuildData;
 import hudson.util.Secret;
 import io.jenkins.plugins.unblocked.UnblockedPlugin;
 import io.jenkins.plugins.unblocked.utils.Http;
 import io.jenkins.plugins.unblocked.utils.Json;
+import io.jenkins.plugins.unblocked.utils.Runs;
 import java.net.http.HttpResponse;
 import java.util.Map;
 import java.util.TreeMap;
 import jenkins.model.Jenkins;
-import jenkins.plugins.git.AbstractGitSCMSource;
-import jenkins.scm.api.SCMRevision;
-import jenkins.scm.api.SCMRevisionAction;
-import jenkins.scm.api.SCMSource;
 
 public class Notifier {
 
@@ -49,55 +45,9 @@ public class Notifier {
     }
 
     private static void injectRepo(Map<String, Object> payload, final Run<?, ?> run) {
-        //
-        final var scmRevisionAction = run.getAction(SCMRevisionAction.class);
-        if (scmRevisionAction != null) {
-            final var scmSource = SCMSource.SourceByItem.findSource(run.getParent());
-            if (scmSource instanceof AbstractGitSCMSource) {
-                final var gitSource = (AbstractGitSCMSource) scmSource;
-                final var repoUrl = gitSource.getRemote();
-                if (repoUrl != null) {
-                    payload.put("repoUrl", repoUrl);
-                }
-            }
-
-            final SCMRevision revision = scmRevisionAction.getRevision();
-            payload.put("repoBranch", revision.getHead().getName());
-            payload.put("repoVersion", revision.toString());
-        }
-
-        if (!payload.containsKey("repoUrl")) {
-            for (var action : run.getActions(BuildData.class)) {
-                var it = action.remoteUrls.iterator();
-                if (it.hasNext()) {
-                    var repoUrl = it.next();
-                    if (repoUrl != null) {
-                        payload.put("repoUrl", repoUrl);
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (!payload.containsKey("repoBranch")) {
-            for (var action : run.getActions(BuildData.class)) {
-                final var it = action.buildsByBranchName.keySet().iterator();
-                if (it.hasNext()) {
-                    final var branch = it.next();
-                    if (branch != null) {
-                        payload.put("repoBranch", branch);
-                        final var build = action.buildsByBranchName.get(branch);
-                        if (build != null) {
-                            final var revision = build.getRevision();
-                            if (revision != null) {
-                                payload.put("repoVersion", revision.getSha1().name());
-                            }
-                        }
-                    }
-                    break;
-                }
-            }
-        }
+        payload.put("repoUrl", Runs.repoUrl(run));
+        payload.put("repoVersion", Runs.repoVersion(run));
+        payload.put("repoBranch", Runs.repoBranch(run));
     }
 
     private static void injectRun(final Map<String, Object> payload, final Run<?, ?> run) {
