@@ -8,5 +8,4 @@ When a CI job fails on a pull request, Unblocked will post a report
 as a comment in your pull request, helping you quickly identify and
 resolve the issue.
 
-
 > https://getunblocked.com
