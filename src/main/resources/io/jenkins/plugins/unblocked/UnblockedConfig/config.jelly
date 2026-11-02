@@ -8,18 +8,5 @@
             <f:password/>
         </f:entry>
     </div>
-    <script>
-        (function() {
-            var disabled = document.getElementById('unblocked-disabled')
-            var signature = document.getElementById('unblocked-signature')
-
-            function toggleSignature() {
-                signature.style.display = disabled.checked ? 'none' : ''
-            }
-
-            disabled.addEventListener('change', toggleSignature)
-
-            toggleSignature()
-        })();
-    </script>
+    <script src="${rootURL}/plugin/unblocked/js/config.js"></script>
 </j:jelly>
